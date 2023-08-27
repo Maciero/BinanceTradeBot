@@ -23,12 +23,18 @@ public class TechnicalAnalysisMethods {
             updateClosePrices(closePrice);
 
             double rsi = calculateRSI();
+            double shortTermMA = calculateMA(7);
+            double mediumTermMA = calculateMA(25);
+            double longTermMA = calculateMA(99);
 
             if (rsi < 30 && rsi != -1) {
                 NewOrder.placeBuyOrder();
             }
 
             System.out.println("RSI: " + rsi);
+            System.out.println("Short Term MA: " + shortTermMA);
+            System.out.println("Medium Term MA: " + mediumTermMA);
+            System.out.println("Long Term MA: " + longTermMA);
             System.out.println("------------------------");
         });
     }
@@ -65,7 +71,7 @@ public class TechnicalAnalysisMethods {
         }
     }
 
-    private static double calculateMovingAverage(int period) {
+    private static double calculateMA(int period) {
         if (closePrices.size() >= period) {
             double sum = 0;
             for (int i = closePrices.size() - period; i < closePrices.size(); i++) {
