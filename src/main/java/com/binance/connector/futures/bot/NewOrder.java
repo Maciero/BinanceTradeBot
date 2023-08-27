@@ -22,11 +22,11 @@ public final class NewOrder {
         UMFuturesClientImpl client = new UMFuturesClientImpl(PrivateConfig.TESTNET_API_KEY, PrivateConfig.TESTNET_SECRET_KEY, PrivateConfig.TESTNET_BASE_URL);
 
         parameters.put("symbol", "BTCUSDT");
-        parameters.put("side", "SELL");
-        parameters.put("type", "LIMIT");
-        parameters.put("timeInForce", "GTC");
+        parameters.put("side", "BUY");
+        parameters.put("type", "MARKET");
+//        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", 1);
-        parameters.put("price", 28000);
+//        parameters.put("price", 28000);
 
         try {
             String result = client.account().newOrder(parameters);
