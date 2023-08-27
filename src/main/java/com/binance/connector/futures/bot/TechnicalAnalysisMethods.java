@@ -139,7 +139,7 @@ public class TechnicalAnalysisMethods {
         parameters.put("symbol", "BTCUSDT");
         parameters.put("side", "BUY");
         parameters.put("type", "MARKET");
-        parameters.put("timeInForce", "GTC");
+//        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", 1);
 //        parameters.put("price", price);
 
