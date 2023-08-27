@@ -1,24 +1,17 @@
 package com.binance.connector.futures.bot;
 
-import com.binance.connector.futures.PrivateConfig;
-import com.binance.connector.futures.bot.WebSocketSingleton;
-import com.binance.connector.futures.client.exceptions.BinanceClientException;
-import com.binance.connector.futures.client.exceptions.BinanceConnectorException;
-import com.binance.connector.futures.client.impl.UMFuturesClientImpl;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class TechnicalAnalysisMethods {
 
     private static final int WINDOW_SIZE = 100;
     private static List<Double> closePrices = new ArrayList<>();
-
     private static final Logger logger = LoggerFactory.getLogger(TechnicalAnalysisMethods.class);
 
     public static void TickerStream() {
@@ -31,8 +24,8 @@ public class TechnicalAnalysisMethods {
 
             double rsi = calculateRSI();
 
-            if (rsi < 30) {
-                placeBuyOrder();
+            if (rsi < 30 && rsi != -1) {
+                NewOrder.placeBuyOrder();
             }
 
             System.out.println("RSI: " + rsi);
@@ -66,8 +59,7 @@ public class TechnicalAnalysisMethods {
 
             double relativeStrength = avgGain / avgLoss;
 
-            double rsi = 100 - (100 / (1 + relativeStrength));
-            return rsi;
+            return 100 - (100 / (1 + relativeStrength));
         } else {
             return -1.0; // Niewystarczająca ilość danych do obliczenia RSI
         }
@@ -125,32 +117,6 @@ public class TechnicalAnalysisMethods {
             return ((closePrices.get(closePrices.size() - 1) - minLow) / (maxHigh - minLow)) * 100;
         } else {
             return -1.0; // Niewystarczająca ilość danych do obliczenia Stochastic Oscillator
-        }
-    }
-    private static void placeBuyOrder() {
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-
-        UMFuturesClientImpl client = new UMFuturesClientImpl(
-                PrivateConfig.TESTNET_API_KEY,
-                PrivateConfig.TESTNET_SECRET_KEY,
-                PrivateConfig.TESTNET_BASE_URL
-        );
-
-        parameters.put("symbol", "BTCUSDT");
-        parameters.put("side", "BUY");
-        parameters.put("type", "MARKET");
-//        parameters.put("timeInForce", "GTC");
-        parameters.put("quantity", 1);
-//        parameters.put("price", price);
-
-        try {
-            String result = client.account().newOrder(parameters);
-            logger.info(result);
-        } catch (BinanceConnectorException e) {
-            logger.error("fullErrMessage: {}", e.getMessage(), e);
-        } catch (BinanceClientException e) {
-            logger.error("fullErrMessage: {} \nerrMessage: {} \nerrCode: {} \nHTTPStatusCode: {}",
-                    e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
         }
     }
 }

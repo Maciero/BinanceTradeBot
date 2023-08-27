@@ -6,27 +6,58 @@ import com.binance.connector.futures.client.exceptions.BinanceConnectorException
 import com.binance.connector.futures.client.impl.UMFuturesClientImpl;
 
 import java.util.LinkedHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class NewOrder {
-    private NewOrder() {
-    }
+
     private static final double quantity = 0.01;
     private static final double price = 50000;
-
     private static final Logger logger = LoggerFactory.getLogger(NewOrder.class);
-    public static void main(String[] args) {
+
+    public static void placeBuyOrder() {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
 
-        UMFuturesClientImpl client = new UMFuturesClientImpl(PrivateConfig.TESTNET_API_KEY, PrivateConfig.TESTNET_SECRET_KEY, PrivateConfig.TESTNET_BASE_URL);
+        UMFuturesClientImpl client = new UMFuturesClientImpl(
+                PrivateConfig.TESTNET_API_KEY,
+                PrivateConfig.TESTNET_SECRET_KEY,
+                PrivateConfig.TESTNET_BASE_URL
+        );
 
         parameters.put("symbol", "BTCUSDT");
         parameters.put("side", "BUY");
-        parameters.put("type", "MARKET");
-//        parameters.put("timeInForce", "GTC");
-        parameters.put("quantity", 1);
-//        parameters.put("price", 28000);
+        parameters.put("type", "LIMIT");
+        parameters.put("timeInForce", "GTC");
+        parameters.put("quantity", quantity);
+        parameters.put("price", price);
+
+        try {
+            String result = client.account().newOrder(parameters);
+            logger.info(result);
+        } catch (BinanceConnectorException e) {
+            logger.error("fullErrMessage: {}", e.getMessage(), e);
+        } catch (BinanceClientException e) {
+            logger.error("fullErrMessage: {} \nerrMessage: {} \nerrCode: {} \nHTTPStatusCode: {}",
+                    e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
+        }
+    }
+
+    public static void placeSellOrder() {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+
+        UMFuturesClientImpl client = new UMFuturesClientImpl(
+                PrivateConfig.TESTNET_API_KEY,
+                PrivateConfig.TESTNET_SECRET_KEY,
+                PrivateConfig.TESTNET_BASE_URL
+        );
+
+        parameters.put("symbol", "BTCUSDT");
+        parameters.put("side", "SELL");
+        parameters.put("type", "LIMIT");
+        parameters.put("timeInForce", "GTC");
+        parameters.put("quantity", quantity);
+        parameters.put("price", price);
 
         try {
             String result = client.account().newOrder(parameters);

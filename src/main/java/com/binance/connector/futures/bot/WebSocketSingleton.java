@@ -11,4 +11,10 @@ public class WebSocketSingleton {
         }
         return client;
     }
+    public static UMWebsocketClientImpl getClientWithKey() {
+        if (client == null) {
+            client = new UMWebsocketClientImpl();
+        }
+        return client;
+    }
 }
