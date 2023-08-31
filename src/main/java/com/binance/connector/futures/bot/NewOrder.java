@@ -12,9 +12,12 @@ import org.slf4j.LoggerFactory;
 
 public final class NewOrder {
 
-    private static final double quantity = 0.01;
-    private static final double price = 50000;
+    private static final double quantity = 1;
+    private static final double price = 26500;
     private static final Logger logger = LoggerFactory.getLogger(NewOrder.class);
+
+    private static final double percentage = 0.2; //20%
+    private static final double calculatedValue = price * (1 - percentage);
 
     public static void placeBuyOrder() {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -26,11 +29,18 @@ public final class NewOrder {
         );
 
         parameters.put("symbol", "BTCUSDT");
+
+        parameters.put("positionSide", "LONG");
+//        parameters.put("stopPrice", "STOP_MARKET");
+//        parameters.put("stopPrice", "26000.00");
+//        parameters.put("stopPrice", "TAKE_PROFIT_MARKET");
+//        parameters.put("activatePrice", "60 000");
+
         parameters.put("side", "BUY");
-        parameters.put("type", "LIMIT");
-        parameters.put("timeInForce", "GTC");
+        parameters.put("type", "MARKET");
+//        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", price);
+//        parameters.put("price", price);
 
         try {
             String result = client.account().newOrder(parameters);
@@ -53,11 +63,77 @@ public final class NewOrder {
         );
 
         parameters.put("symbol", "BTCUSDT");
+
+        parameters.put("positionSide", "SHORT");
+//        parameters.put("stopPrice", "STOP_MARKET");
+//        parameters.put("stopPrice", "TAKE_PROFIT_MARKET");
+        //        parameters.put("activatePrice", "10 000");
+
         parameters.put("side", "SELL");
-        parameters.put("type", "LIMIT");
+        parameters.put("type", "MARKET");
         parameters.put("timeInForce", "GTC");
-        parameters.put("quantity", quantity);
+//        parameters.put("quantity", quantity);
         parameters.put("price", price);
+
+        try {
+            String result = client.account().newOrder(parameters);
+            logger.info(result);
+        } catch (BinanceConnectorException e) {
+            logger.error("fullErrMessage: {}", e.getMessage(), e);
+        } catch (BinanceClientException e) {
+            logger.error("fullErrMessage: {} \nerrMessage: {} \nerrCode: {} \nHTTPStatusCode: {}",
+                    e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
+        }
+    }
+
+    public static void placeBuyOrderStopLoss() {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+
+        UMFuturesClientImpl client = new UMFuturesClientImpl(
+                PrivateConfig.TESTNET_API_KEY,
+                PrivateConfig.TESTNET_SECRET_KEY,
+                PrivateConfig.TESTNET_BASE_URL
+        );
+
+        parameters.put("symbol", "BTCUSDT");
+        parameters.put("side","SELL");
+        parameters.put("type","STOP");// STOP_MARKET
+        parameters.put("quantity", quantity);
+        parameters.put("price",String.format("%d", (int)calculatedValue) );
+        parameters.put("stopPrice","24000");
+        parameters.put("timeInForce", "GTC");
+        parameters.put("positionSide", "SHORT");
+//        parameters.put("stopPrice","30000");
+
+
+        try {
+            String result = client.account().newOrder(parameters);
+            logger.info(result);
+        } catch (BinanceConnectorException e) {
+            logger.error("fullErrMessage: {}", e.getMessage(), e);
+        } catch (BinanceClientException e) {
+            logger.error("fullErrMessage: {} \nerrMessage: {} \nerrCode: {} \nHTTPStatusCode: {}",
+                    e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
+        }
+    }
+    public static void placeBuyOrderTakeProfit() {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+
+        UMFuturesClientImpl client = new UMFuturesClientImpl(
+                PrivateConfig.TESTNET_API_KEY,
+                PrivateConfig.TESTNET_SECRET_KEY,
+                PrivateConfig.TESTNET_BASE_URL
+        );
+
+        parameters.put("symbol", "BTCUSDT");
+        parameters.put("side","SELL");
+        parameters.put("type","TAKE_PROFIT");// STOP_MARKET
+        parameters.put("quantity", quantity);
+        parameters.put("price", "35000");
+        parameters.put("stopPrice","35000");
+        parameters.put("timeInForce", "GTC");
+        parameters.put("positionSide", "SHORT");
+
 
         try {
             String result = client.account().newOrder(parameters);
