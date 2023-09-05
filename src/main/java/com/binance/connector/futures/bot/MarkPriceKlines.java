@@ -6,24 +6,32 @@ import com.binance.connector.futures.client.impl.UMFuturesClientImpl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
+import java.util.*;
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import java.util.List;
 
 import static com.binance.connector.futures.bot.TechAnalysisMethods.calculateMACD;
 import static com.binance.connector.futures.bot.TechAnalysisMethods.calculateMovingAverage;
 
 
 public class MarkPriceKlines {
-
-
     public static void main(String[] args) {
+    // Tworzymy nowy obiekt Timer
+    Timer timer = new Timer();
+
+    // Ustawiamy zadanie, które ma być wykonywane co 1 minute
+    timer.scheduleAtFixedRate(new TradingSignalTask(), 0, 1 * 60 * 1000);
+}
+    static class TradingSignalTask extends TimerTask {
+        @Override
+        public void run() {
+            // Tutaj wywołujemy kod, który ma być wykonywany co 15 minut
+            processTradingSignal();
+        }
+    }
+
+    public static void processTradingSignal() {
 
 
         UMFuturesClientImpl client = new UMFuturesClientImpl();
@@ -84,7 +92,7 @@ public class MarkPriceKlines {
             int signalPeriod = 9; // Okres dla sygnału
 
             MACD macd = calculateMACD(closePrices, shortTermPeriod, longTermPeriod, signalPeriod);
-            System.out.println(macd);
+//            System.out.println(macd);
 
             double latestMacd = macd.getLatestMacd(); // Pobiera najnowszą wartość MACD
             double latestSignal = macd.getLatestSignal(); // Pobiera najnowszą wartość Signal Line
@@ -92,7 +100,7 @@ public class MarkPriceKlines {
 
             System.out.println("Latest Macd: " + latestMacd);
             System.out.println("Latest Signal: " + latestSignal);
-            System.out.println("Latest Histogram: " + latestHistogram);
+//            System.out.println("Latest Histogram: " + latestHistogram);
 
             double ma7 = calculateMovingAverage(closePrices, 7);
             double ma25 = calculateMovingAverage(closePrices, 25);
@@ -107,10 +115,13 @@ public class MarkPriceKlines {
 
             System.out.println(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
 
+            NewOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
+
         } catch (BinanceConnectorException e) {
         } catch (BinanceClientException e) {
         }
 
 
     }
+
 }

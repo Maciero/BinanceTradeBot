@@ -116,21 +116,19 @@ public class TechAnalysisMethods {
         MACD macd = calculateMACD(closePrices, 12, 26, 9); // Przykładowe parametry MACD
         double movingAverage = calculateMovingAverage(closePrices, 14); // Przykładowy okres średniej kroczącej
 
-        // Kryteria dla RSI
-        if (rsi > 70) {
+        // Kryteria dla RSI i MACD
+        if (rsi > 70 && macd.getMacdLine()[macd.getMacdLine().length - 1] < macd.getSignalLine()[macd.getSignalLine().length - 1]) {
             return Signal.SELL; // Sygnał do sprzedaży
-        } else if (rsi < 30) {
+        } else if (rsi < 30 && macd.getMacdLine()[macd.getMacdLine().length - 1] > macd.getSignalLine()[macd.getSignalLine().length - 1]) {
             return Signal.BUY; // Sygnał do zakupu
         }
 
-        // Kryteria dla MACD
-        if (macd.getMacdLine()[macd.getMacdLine().length - 1] > macd.getSignalLine()[macd.getSignalLine().length - 1]) {
-            return Signal.BUY; // Sygnał do zakupu
-        } else if (macd.getMacdLine()[macd.getMacdLine().length - 1] < macd.getSignalLine()[macd.getSignalLine().length - 1]) {
-            return Signal.SELL; // Sygnał do sprzedaży
-        }
-
-        // Możesz dodać dodatkowe kryteria dotyczące średniej kroczącej lub inne według potrzeb.
+//        // Kryteria dla MACD
+//        if (macd.getMacdLine()[macd.getMacdLine().length - 1] > macd.getSignalLine()[macd.getSignalLine().length - 1]) {
+//            return Signal.BUY; // Sygnał do zakupu
+//        } else if (macd.getMacdLine()[macd.getMacdLine().length - 1] < macd.getSignalLine()[macd.getSignalLine().length - 1]) {
+//            return Signal.SELL; // Sygnał do sprzedaży
+//        }
 
         // Jeśli nie spełniono żadnych warunków, zwracamy HOLD jako brak sygnału.
         return Signal.HOLD;
