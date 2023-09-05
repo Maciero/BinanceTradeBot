@@ -5,15 +5,8 @@ import com.binance.connector.futures.client.exceptions.BinanceConnectorException
 import com.binance.connector.futures.client.impl.UMFuturesClientImpl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.ta4j.core.Bar;
-import org.ta4j.core.BaseBar;
-import org.ta4j.core.TimeS;
 
-import java.text.ParseException;
-import java.time.Duration;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 
 import java.lang.reflect.Type;
@@ -44,32 +37,54 @@ public class MarkPriceKlines {
             }.getType();
             List<String[]> dataArray = gson.fromJson(result, listType);
 
-            List<Bar> bars = new ArrayList<>();
-            // Przetwarzanie danych
+
+//                // Przetwarzanie danych
             for (String[] data : dataArray) {
                 long timestamp = Long.parseLong(data[0]);
-                double open = Double.parseDouble(data[1]);
-                double high = Double.parseDouble(data[2]);
-                double low = Double.parseDouble(data[3]);
-                double close = Double.parseDouble(data[4]);
+
+                String open = data[1];
+                String high = data[2];
+                String low = data[3];
+                String close = data[4];
                 long endTime = Long.parseLong(data[6]);
 
 
                 // Konwersja timestamp na czytelną datę
-                String formattedOpenDate = String.valueOf(convertTimestampToZonedDateTime(timestamp));
-                String formattedEndDate = String.valueOf(convertTimestampToZonedDateTime(endTime));
+                String formattedOpenDate = convertTimestampToHumanReadable(timestamp);
+                String formattedEndDate = convertTimestampToHumanReadable(endTime);
 
-                TimeSeries timeSeries = new BaseTimeSeries();
-                BaseBar bar = new BaseBar(
-                        Duration.ofMinutes(15), // Przykład: interwał 15 minut
-                        ZonedDateTime.parse(formattedOpenDate),
-                        open,
-                        high,
-                        low,
-                        close,
-                        0.0, // Wolumen (dostosuj)
-                        0.0  // Wartość średniej (dostosuj)
-                );
+
+                for (int i = 14; i < dataArray.size(); i++) {
+                    double sumGain = 0;
+                    double sumLoss = 0;
+
+                    for (int j = i - 14; j < i; j++) {
+                        double prevClose = Double.parseDouble(dataArray.get(j)[4]);
+                        double currentClose = Double.parseDouble(dataArray.get(j + 1)[4]);
+                        double priceChange = currentClose - prevClose;
+
+                        if (priceChange > 0) {
+                            sumGain += priceChange;
+                        } else {
+                            sumLoss -= priceChange;  // Ujemne wartości zmiany ceny dodajemy jako straty
+                        }
+                    }
+
+                    double avgGain = sumGain / 14;
+                    double avgLoss = sumLoss / 14;
+
+                    double relativeStrength = avgGain / avgLoss;
+                    double rsi = 100 - (100 / (1 + relativeStrength));
+
+                    // Zaokrąglamy RSI do dwóch miejsc po przecinku
+                    DecimalFormat df = new DecimalFormat("#.00");
+                    String roundedRSI = df.format(rsi);
+
+                    long epochCloseTimestamp = Long.parseLong(dataArray.get(i)[0]);
+                    String humanReadableTimestamp = convertTimestampToHumanReadable(epochCloseTimestamp);
+
+                    System.out.println("RSI at timestamp " + humanReadableTimestamp + ": " + roundedRSI);
+                }
 
 
                 // Wyświetlanie tylko interesujących wartości
@@ -80,6 +95,8 @@ public class MarkPriceKlines {
                 System.out.println("Close: " + close);
                 System.out.println("EndTime: " + formattedEndDate);
                 System.out.println("--------------------------------");
+
+
             }
         } catch (BinanceConnectorException e) {
         } catch (BinanceClientException e) {
@@ -87,15 +104,9 @@ public class MarkPriceKlines {
 
     }
 
-    private static ZonedDateTime convertTimestampToZonedDateTime(long timestamp) {
+    private static String convertTimestampToHumanReadable(long timestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(timestamp);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-        try {
-            Date utcDate = sdf.parse(sdf.format(date));
-            return ZonedDateTime.ofInstant(utcDate.toInstant(), ZoneId.systemDefault());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return ZonedDateTime.now();
-        }
+        return sdf.format(date);
     }
 }
