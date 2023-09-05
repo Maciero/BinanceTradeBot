@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import java.lang.reflect.Type;
@@ -14,6 +15,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import java.util.List;
+
+import static com.binance.connector.futures.bot.TechAnalysisMethods.calculateMACD;
+import static com.binance.connector.futures.bot.TechAnalysisMethods.calculateMovingAverage;
 
 
 public class MarkPriceKlines {
@@ -28,6 +32,8 @@ public class MarkPriceKlines {
         parameters.put("symbol", "BTCUSDT");
         parameters.put("interval", "15m");
 
+        List<Double> closePrices = new ArrayList<>();
+
         try {
             String result = client.market().markPriceKlines(parameters);
 
@@ -38,7 +44,7 @@ public class MarkPriceKlines {
             List<String[]> dataArray = gson.fromJson(result, listType);
 
 
-            TechAnalysisMethods.calculateRSI(dataArray);
+            String formattedOpenDate="";
 //                // Przetwarzanie danych
             for (String[] data : dataArray) {
 
@@ -50,10 +56,14 @@ public class MarkPriceKlines {
                 long endTime = Long.parseLong(data[6]);
 
 
-//                // Konwersja timestamp na czytelną datę
-//                String formattedOpenDate = convertTimestampToHumanReadable(timestamp);
-//                String formattedEndDate = convertTimestampToHumanReadable(endTime);
-//
+                double closeNumber = Double.parseDouble(close); // Cena zamknięcia
+                closePrices.add(closeNumber);
+
+
+                // Konwersja timestamp na czytelną datę
+                formattedOpenDate = TechAnalysisMethods.convertTimestampToHumanReadable(timestamp);
+                String formattedEndDate = TechAnalysisMethods.convertTimestampToHumanReadable(endTime);
+
 //
 //                // Wyświetlanie tylko interesujących wartości
 //                System.out.println("OpenTime: " + formattedOpenDate);
@@ -64,13 +74,42 @@ public class MarkPriceKlines {
 //                System.out.println("EndTime: " + formattedEndDate);
 //                System.out.println("--------------------------------");
 
-                
 
             }
+            System.out.println("--------------------------------");
+            System.out.println(formattedOpenDate);
+
+            int shortTermPeriod = 12; // Okres dla EMA krótkiego
+            int longTermPeriod = 26; // Okres dla EMA długiego
+            int signalPeriod = 9; // Okres dla sygnału
+
+            MACD macd = calculateMACD(closePrices, shortTermPeriod, longTermPeriod, signalPeriod);
+            System.out.println(macd);
+
+            double latestMacd = macd.getLatestMacd(); // Pobiera najnowszą wartość MACD
+            double latestSignal = macd.getLatestSignal(); // Pobiera najnowszą wartość Signal Line
+            double latestHistogram = macd.getLatestHistogram(); // Pobiera najnowszą wartość Histogram
+
+            System.out.println("Latest Macd: " + latestMacd);
+            System.out.println("Latest Signal: " + latestSignal);
+            System.out.println("Latest Histogram: " + latestHistogram);
+
+            double ma7 = calculateMovingAverage(closePrices, 7);
+            double ma25 = calculateMovingAverage(closePrices, 25);
+            double ma99 = calculateMovingAverage(closePrices, 99);
+
+            System.out.println("MA(7): " + ma7);
+            System.out.println("MA(25): " + ma25);
+            System.out.println("MA(99): " + ma99);
+
+            System.out.println("RSI(14): " + TechAnalysisMethods.calculateRSI(dataArray));
+            System.out.println("--------------------------------");
+
+            System.out.println(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
+
         } catch (BinanceConnectorException e) {
         } catch (BinanceClientException e) {
         }
-
 
 
     }

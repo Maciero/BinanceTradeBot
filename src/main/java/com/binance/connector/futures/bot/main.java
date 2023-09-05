@@ -9,5 +9,6 @@ public class main {
 //        NewOrder.placeBuyOrder();
 //    NewOrder.placeBuyOrderStopLoss();
     NewOrder.placeBuyOrderTakeProfit();
+
     }
 }
