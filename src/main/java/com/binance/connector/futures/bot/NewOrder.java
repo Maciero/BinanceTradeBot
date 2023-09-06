@@ -39,6 +39,14 @@ public class NewOrder {
             placeSellOrderTakeProfit();
         }
     }
+    public void checkForSignalIfgetPositionListIsNotEmpty(Signal signal) {
+        if (signal == Signal.BUY) {
+            placeBuyOrderForShortPosition();
+
+        } else if (signal == Signal.SELL) {
+            placeSellOrderForLongPosition();
+        }
+    }
 
     public static void placeBuyOrder() {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
@@ -115,15 +123,6 @@ public class NewOrder {
                 PrivateConfig.TESTNET_SECRET_KEY,
                 PrivateConfig.TESTNET_BASE_URL
         );
-
-//        parameters.put("symbol", "BTCUSDT");
-//        parameters.put("side", "SELL");
-//        parameters.put("type", "TAKE_PROFIT");// STOP_MARKET
-//        parameters.put("quantity", quantity);
-//        parameters.put("price", "35000");
-//        parameters.put("stopPrice", "35000");
-//        parameters.put("timeInForce", "GTC");
-//        parameters.put("positionSide", "SHORT");
 
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
@@ -242,6 +241,56 @@ public class NewOrder {
         parameters.put("workingType", "MARK_PRICE");
         parameters.put("priceProtect", true);
 
+
+        try {
+            String result = client.account().newOrder(parameters);
+            logger.info(result);
+        } catch (BinanceConnectorException e) {
+            logger.error("fullErrMessage: {}", e.getMessage(), e);
+        } catch (BinanceClientException e) {
+            logger.error("fullErrMessage: {} \nerrMessage: {} \nerrCode: {} \nHTTPStatusCode: {}",
+                    e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
+        }
+    }
+    public static void placeBuyOrderForShortPosition() {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+
+        UMFuturesClientImpl client = new UMFuturesClientImpl(
+                PrivateConfig.TESTNET_API_KEY,
+                PrivateConfig.TESTNET_SECRET_KEY,
+                PrivateConfig.TESTNET_BASE_URL
+        );
+
+        parameters.put("symbol", "ETHUSDT");
+        parameters.put("side", "BUY");
+        parameters.put("positionSide", "SHORT");
+        parameters.put("type", "MARKET");
+        parameters.put("quantity", quantity);
+
+        try {
+            String result = client.account().newOrder(parameters);
+            logger.info(result);
+        } catch (BinanceConnectorException e) {
+            logger.error("fullErrMessage: {}", e.getMessage(), e);
+        } catch (BinanceClientException e) {
+            logger.error("fullErrMessage: {} \nerrMessage: {} \nerrCode: {} \nHTTPStatusCode: {}",
+                    e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
+        }
+    }
+    public static void placeSellOrderForLongPosition() {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+
+        UMFuturesClientImpl client = new UMFuturesClientImpl(
+                PrivateConfig.TESTNET_API_KEY,
+                PrivateConfig.TESTNET_SECRET_KEY,
+                PrivateConfig.TESTNET_BASE_URL
+        );
+
+        parameters.put("symbol", "ETHUSDT");
+        parameters.put("side", "SELL");
+        parameters.put("positionSide", "LONG");
+        parameters.put("type", "MARKET");
+        parameters.put("quantity", quantity);
 
         try {
             String result = client.account().newOrder(parameters);

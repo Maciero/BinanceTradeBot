@@ -8,10 +8,12 @@ public class main {
 
 //        MarkPriceKlines.processTradingSignal();
 
-//        NewOrder.placeSellOrder();
+
 //        NewOrder.placeSellOrderStopLoss();
 //        NewOrder.placeSellOrderTakeProfit();
 //        NewOrder.placeBuyOrder();
+//        NewOrder.placeSellOrder();
+//        NewOrder.placeBuyOrderForShortPosition();
 ////            NewOrder.placeBuyOrderStopLoss();
 //    NewOrder.placeBuyOrderTakeProfit();
         System.out.println(GetAdlQuantile.getPositionListIfEmpty());

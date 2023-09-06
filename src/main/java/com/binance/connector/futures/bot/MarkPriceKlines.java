@@ -127,8 +127,10 @@ public class MarkPriceKlines {
             if (GetAdlQuantile.getPositionListIfEmpty()) {
                 NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
                 newOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
-
-//                NewOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
+            }
+            else if (!GetAdlQuantile.getPositionListIfEmpty()) {
+                NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
+                newOrder.checkForSignalIfgetPositionListIsNotEmpty(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
             }
 
 
