@@ -18,6 +18,7 @@ public class NewOrder {
     public NewOrder(double closeNumber) {
         this.price = closeNumber;
     }
+
     private static final double quantity = 1;
     private static double price;
     private static final Logger logger = LoggerFactory.getLogger(NewOrder.class);
@@ -154,19 +155,11 @@ public class NewOrder {
                 PrivateConfig.TESTNET_BASE_URL
         );
 
-
         parameters.put("symbol", "BTCUSDT");
-
-        parameters.put("positionSide", "SHORT");
-//        parameters.put("stopPrice", "STOP_MARKET");
-//        parameters.put("stopPrice", "TAKE_PROFIT_MARKET");
-        //        parameters.put("activatePrice", "10 000");
-
         parameters.put("side", "SELL");
+        parameters.put("positionSide", "SHORT");
         parameters.put("type", "MARKET");
-        parameters.put("timeInForce", "GTC");
-//        parameters.put("quantity", quantity);
-        parameters.put("price", price);
+        parameters.put("quantity", quantity);
 
         try {
             String result = client.account().newOrder(parameters);
@@ -188,15 +181,26 @@ public class NewOrder {
                 PrivateConfig.TESTNET_BASE_URL
         );
 
+//        parameters.put("symbol", "BTCUSDT");
+//        parameters.put("side", "BUY");
+//        parameters.put("type", "STOP");// STOP_MARKET
+//        parameters.put("quantity", quantity);
+//        parameters.put("price", String.format("%d", (int) calculatedValue));
+//        parameters.put("stopPrice", "27000");
+//        parameters.put("timeInForce", "GTC");
+//        parameters.put("positionSide", "SHORT");
+////        parameters.put("stopPrice","30000");
+
         parameters.put("symbol", "BTCUSDT");
         parameters.put("side", "BUY");
-        parameters.put("type", "STOP");// STOP_MARKET
-        parameters.put("quantity", quantity);
-        parameters.put("price", String.format("%d", (int) calculatedValue));
-        parameters.put("stopPrice", "27000");
-        parameters.put("timeInForce", "GTC");
-        parameters.put("positionSide", "LONG");
-//        parameters.put("stopPrice","30000");
+        parameters.put("positionSide", "SHORT");
+        parameters.put("type", "STOP_MARKET");
+        parameters.put("stopPrice", String.format("%d", (int) calculatedValue));
+        parameters.put("closePosition", true);
+        parameters.put("timeInForce", "GTE_GTC");
+        parameters.put("workingType", "MARK_PRICE");
+        parameters.put("priceProtect", true);
+
 
 
         try {
@@ -219,14 +223,24 @@ public class NewOrder {
                 PrivateConfig.TESTNET_BASE_URL
         );
 
+//        parameters.put("symbol", "BTCUSDT");
+//        parameters.put("side", "BUY");
+//        parameters.put("type", "TAKE_PROFIT");// STOP_MARKET
+//        parameters.put("quantity", quantity);
+//        parameters.put("price", "20000");
+//        parameters.put("stopPrice", "20000");
+//        parameters.put("timeInForce", "GTC");
+//        parameters.put("positionSide", "LONG");
+
         parameters.put("symbol", "BTCUSDT");
         parameters.put("side", "BUY");
-        parameters.put("type", "TAKE_PROFIT");// STOP_MARKET
-        parameters.put("quantity", quantity);
-        parameters.put("price", "20000");
-        parameters.put("stopPrice", "20000");
-        parameters.put("timeInForce", "GTC");
-        parameters.put("positionSide", "LONG");
+        parameters.put("positionSide", "SHORT");
+        parameters.put("type", "TAKE_PROFIT_MARKET");
+        parameters.put("stopPrice", 20000);
+        parameters.put("closePosition", true);
+        parameters.put("timeInForce", "GTE_GTC");
+        parameters.put("workingType", "MARK_PRICE");
+        parameters.put("priceProtect", true);
 
 
         try {
