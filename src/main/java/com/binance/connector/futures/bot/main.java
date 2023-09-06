@@ -6,9 +6,9 @@ public class main {
 //        TechnicalAnalysisMethods.TickerStream();
 //        NewOrder.placeBuyOrder();
 //        NewOrder.placeBuyOrderTakeProfit();
-//        NewOrder.placeBuyOrder();
-//    NewOrder.placeBuyOrderStopLoss();
-//    NewOrder.placeBuyOrderTakeProfit();
+        NewOrder.placeBuyOrder();
+    NewOrder.placeBuyOrderStopLoss();
+    NewOrder.placeBuyOrderTakeProfit();
 
     }
 }

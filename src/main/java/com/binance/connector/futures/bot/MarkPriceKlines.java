@@ -116,6 +116,7 @@ public class MarkPriceKlines {
             System.out.println(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
 
             if (GetAdlQuantile.getPositionListIfEmpty()){
+                NewOrder newOrder = new NewOrder(closeNumber);
                 NewOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
             }
 
