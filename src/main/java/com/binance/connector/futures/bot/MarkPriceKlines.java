@@ -115,7 +115,11 @@ public class MarkPriceKlines {
 
             System.out.println(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
 
-            NewOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
+            if (GetAdlQuantile.getPositionListIfEmpty()){
+                NewOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
+            }
+
+
 
         } catch (BinanceConnectorException e) {
         } catch (BinanceClientException e) {
