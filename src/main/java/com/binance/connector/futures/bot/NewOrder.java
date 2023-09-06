@@ -18,10 +18,6 @@ public class NewOrder {
     public NewOrder(double closeNumber) {
         this.price = closeNumber;
     }
-
-
-
-    private static List<Double> closePrices = new ArrayList<>();
     private static final double quantity = 1;
     private static double price;
     private static final Logger logger = LoggerFactory.getLogger(NewOrder.class);
@@ -30,7 +26,7 @@ public class NewOrder {
     private static final double calculatedValue = price * (1 - percentage);
 
 
-    public static void checkForSignal(Signal signal) {
+    public void checkForSignal(Signal signal) {
         if (signal == Signal.BUY) {
             placeBuyOrder();
             placeBuyOrderStopLoss();
