@@ -12,7 +12,7 @@ public class main {
 //        NewOrder.placeSellOrderStopLoss();
 //        NewOrder.placeSellOrderTakeProfit();
 //        NewOrder.placeBuyOrder();
-//            NewOrder.placeBuyOrderStopLoss();
+////            NewOrder.placeBuyOrderStopLoss();
 //    NewOrder.placeBuyOrderTakeProfit();
         System.out.println(GetAdlQuantile.getPositionListIfEmpty());
     }
