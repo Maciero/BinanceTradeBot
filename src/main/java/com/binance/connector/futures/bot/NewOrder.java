@@ -49,7 +49,7 @@ public class NewOrder {
                 PrivateConfig.TESTNET_BASE_URL
         );
 
-        parameters.put("symbol", "BTCUSDT");
+        parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "BUY");
         parameters.put("positionSide", "LONG");
         parameters.put("type", "MARKET");
@@ -85,7 +85,7 @@ public class NewOrder {
 //        parameters.put("positionSide", "SHORT");
 ////        parameters.put("stopPrice","String.format("%d", (int) calculatedValue)");
 
-        parameters.put("symbol", "BTCUSDT");
+        parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
         parameters.put("positionSide", "LONG");
         parameters.put("type", "STOP_MARKET");
@@ -125,11 +125,11 @@ public class NewOrder {
 //        parameters.put("timeInForce", "GTC");
 //        parameters.put("positionSide", "SHORT");
 
-        parameters.put("symbol", "BTCUSDT");
+        parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
         parameters.put("positionSide", "LONG");
         parameters.put("type", "TAKE_PROFIT_MARKET");
-        parameters.put("stopPrice", 30000);
+        parameters.put("stopPrice", 3000);
         parameters.put("closePosition", true);
         parameters.put("timeInForce", "GTE_GTC");
         parameters.put("workingType", "MARK_PRICE");
@@ -155,7 +155,7 @@ public class NewOrder {
                 PrivateConfig.TESTNET_BASE_URL
         );
 
-        parameters.put("symbol", "BTCUSDT");
+        parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
         parameters.put("positionSide", "SHORT");
         parameters.put("type", "MARKET");
@@ -191,7 +191,7 @@ public class NewOrder {
 //        parameters.put("positionSide", "SHORT");
 ////        parameters.put("stopPrice","30000");
 
-        parameters.put("symbol", "BTCUSDT");
+        parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "BUY");
         parameters.put("positionSide", "SHORT");
         parameters.put("type", "STOP_MARKET");
@@ -232,7 +232,7 @@ public class NewOrder {
 //        parameters.put("timeInForce", "GTC");
 //        parameters.put("positionSide", "LONG");
 
-        parameters.put("symbol", "BTCUSDT");
+        parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "BUY");
         parameters.put("positionSide", "SHORT");
         parameters.put("type", "TAKE_PROFIT_MARKET");

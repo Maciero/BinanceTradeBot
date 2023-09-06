@@ -4,12 +4,16 @@ public class main {
     public static void main(String[] args) {
 //        MiniTickerStream.TickerStream();
 //        TechnicalAnalysisMethods.TickerStream();
-//        NewOrder.placeBuyOrder();
-//        NewOrder.placeBuyOrderTakeProfit();
-//        NewOrder.placeBuyOrder();
-//    NewOrder.placeBuyOrderStopLoss();
-//    NewOrder.placeBuyOrderTakeProfit();
+
+
 //        MarkPriceKlines.processTradingSignal();
+
+//        NewOrder.placeSellOrder();
+//        NewOrder.placeSellOrderStopLoss();
+//        NewOrder.placeSellOrderTakeProfit();
+        NewOrder.placeBuyOrder();
+//            NewOrder.placeBuyOrderStopLoss();
+    NewOrder.placeBuyOrderTakeProfit();
         System.out.println(GetAdlQuantile.getPositionListIfEmpty());
     }
 }
