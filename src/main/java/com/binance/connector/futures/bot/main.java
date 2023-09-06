@@ -11,9 +11,9 @@ public class main {
 //        NewOrder.placeSellOrder();
 //        NewOrder.placeSellOrderStopLoss();
 //        NewOrder.placeSellOrderTakeProfit();
-        NewOrder.placeBuyOrder();
+//        NewOrder.placeBuyOrder();
 //            NewOrder.placeBuyOrderStopLoss();
-    NewOrder.placeBuyOrderTakeProfit();
+//    NewOrder.placeBuyOrderTakeProfit();
         System.out.println(GetAdlQuantile.getPositionListIfEmpty());
     }
 }

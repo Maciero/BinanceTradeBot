@@ -38,7 +38,7 @@ public class MarkPriceKlines {
         UMFuturesClientImpl client = new UMFuturesClientImpl();
 
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-        parameters.put("symbol", "BTCUSDT");
+        parameters.put("symbol", "ETHUSDT");
         parameters.put("interval", "15m");
 
         List<Double> closePrices = new ArrayList<>();
