@@ -17,12 +17,13 @@ import static com.binance.connector.futures.bot.TechAnalysisMethods.calculateMov
 
 public class MarkPriceKlines {
     public static void main(String[] args) {
-    // Tworzymy nowy obiekt Timer
-    Timer timer = new Timer();
+        // Tworzymy nowy obiekt Timer
+        Timer timer = new Timer();
 
-    // Ustawiamy zadanie, które ma być wykonywane co 1 minute
-    timer.scheduleAtFixedRate(new TradingSignalTask(), 0, 1 * 60 * 1000);
-}
+        // Ustawiamy zadanie, które ma być wykonywane co 1 minute
+        timer.scheduleAtFixedRate(new TradingSignalTask(), 0, 1 * 60 * 1000);
+    }
+
     static class TradingSignalTask extends TimerTask {
         @Override
         public void run() {
@@ -37,10 +38,11 @@ public class MarkPriceKlines {
         UMFuturesClientImpl client = new UMFuturesClientImpl();
 
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-        parameters.put("symbol", "BTCUSDT");
+        parameters.put("symbol", "ETHUSDT");
         parameters.put("interval", "15m");
 
         List<Double> closePrices = new ArrayList<>();
+        double closeNumber;
 
         try {
             String result = client.market().markPriceKlines(parameters);
@@ -52,7 +54,7 @@ public class MarkPriceKlines {
             List<String[]> dataArray = gson.fromJson(result, listType);
 
 
-            String formattedOpenDate="";
+            String formattedOpenDate = "";
 //                // Przetwarzanie danych
             for (String[] data : dataArray) {
 
@@ -64,7 +66,7 @@ public class MarkPriceKlines {
                 long endTime = Long.parseLong(data[6]);
 
 
-                double closeNumber = Double.parseDouble(close); // Cena zamknięcia
+                closeNumber = Double.parseDouble(close); // Cena zamknięcia
                 closePrices.add(closeNumber);
 
 
@@ -86,6 +88,7 @@ public class MarkPriceKlines {
             }
             System.out.println("--------------------------------");
             System.out.println(formattedOpenDate);
+            System.out.println("Coin close price: " + closePrices.get(closePrices.size() - 1));
 
             int shortTermPeriod = 12; // Okres dla EMA krótkiego
             int longTermPeriod = 26; // Okres dla EMA długiego
@@ -113,12 +116,15 @@ public class MarkPriceKlines {
             System.out.println("RSI(14): " + TechAnalysisMethods.calculateRSI(dataArray));
             System.out.println("--------------------------------");
 
-            System.out.println(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
+            System.out.println(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
 
-            if (GetAdlQuantile.getPositionListIfEmpty()){
-                NewOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
+
+            if (GetAdlQuantile.getPositionListIfEmpty()) {
+                NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
+                newOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
+
+//                NewOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
             }
-
 
 
         } catch (BinanceConnectorException e) {
