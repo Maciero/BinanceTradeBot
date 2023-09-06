@@ -13,13 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 
-public final class GetAdlQuantile {
-    private GetAdlQuantile() {
-    }
+public class GetAdlQuantile {
 
     private static final Logger logger = LoggerFactory.getLogger(GetAdlQuantile.class);
 
-    public static void main(String[] args) {
+    public static boolean getPositionListIfEmpty() {
         UMFuturesClientImpl client = new UMFuturesClientImpl(PrivateConfig.TESTNET_API_KEY, PrivateConfig.TESTNET_SECRET_KEY, PrivateConfig.TESTNET_BASE_URL);
 
         try {
@@ -29,19 +27,32 @@ public final class GetAdlQuantile {
             Gson gson = new Gson();
             JsonArray jsonArray = gson.fromJson(result, JsonArray.class);
 
+            // Sprawdź, czy JSON jest pusty
+            if (jsonArray.isEmpty()) {
+                return true;
+            }
+
             for (int i = 0; i < jsonArray.size(); i++) {
                 JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
                 String symbol = jsonObject.get("symbol").getAsString();
                 JsonObject adlQuantile = jsonObject.getAsJsonObject("adlQuantile");
 
-                int longValue = adlQuantile.get("LONG").getAsInt();
-                int shortValue = adlQuantile.get("SHORT").getAsInt();
-                int bothValue = adlQuantile.get("BOTH").getAsInt();
+                // Sprawdź, czy klucze istnieją i czy nie są nullem
+                if (adlQuantile.has("LONG") && !adlQuantile.get("LONG").isJsonNull()
+                        && adlQuantile.has("SHORT") && !adlQuantile.get("SHORT").isJsonNull()
+                        && adlQuantile.has("BOTH") && !adlQuantile.get("BOTH").isJsonNull()) {
 
-                System.out.println("Symbol: " + symbol);
-                System.out.println("LONG: " + longValue);
-                System.out.println("SHORT: " + shortValue);
-                System.out.println("BOTH: " + bothValue);
+                    int longValue = adlQuantile.get("LONG").getAsInt();
+                    int shortValue = adlQuantile.get("SHORT").getAsInt();
+                    int bothValue = adlQuantile.get("BOTH").getAsInt();
+
+                    System.out.println("Symbol: " + symbol);
+                    System.out.println("LONG: " + longValue);
+                    System.out.println("SHORT: " + shortValue);
+                    System.out.println("BOTH: " + bothValue);
+                } else {
+                    System.out.println("Brak danych dla symbolu: " + symbol);
+                }
             }
         } catch (BinanceConnectorException e) {
             logger.error("fullErrMessage: {}", e.getMessage(), e);
@@ -49,5 +60,6 @@ public final class GetAdlQuantile {
             logger.error("fullErrMessage: {} \nerrMessage: {} \nerrCode: {} \nHTTPStatusCode: {}",
                     e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
         }
+        return false;
     }
 }

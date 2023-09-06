@@ -19,6 +19,20 @@ public final class NewOrder {
     private static final double percentage = 0.2; //20%
     private static final double calculatedValue = price * (1 - percentage);
 
+
+    public static void checkForSignal(Signal signal) {
+        if (signal == Signal.BUY) {
+            placeBuyOrder();
+            placeBuyOrderStopLoss();
+            placeBuyOrderTakeProfit();
+
+        } else if (signal == Signal.SELL) {
+            placeSellOrder();
+            placeSellOrderStopLoss();
+            placeSellOrderTakeProfit();
+        }
+    }
+
     public static void placeBuyOrder() {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
 
@@ -41,6 +55,67 @@ public final class NewOrder {
 //        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
 //        parameters.put("price", price);
+
+        try {
+            String result = client.account().newOrder(parameters);
+            logger.info(result);
+        } catch (BinanceConnectorException e) {
+            logger.error("fullErrMessage: {}", e.getMessage(), e);
+        } catch (BinanceClientException e) {
+            logger.error("fullErrMessage: {} \nerrMessage: {} \nerrCode: {} \nHTTPStatusCode: {}",
+                    e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
+        }
+    }
+
+    public static void placeBuyOrderStopLoss() {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+
+        UMFuturesClientImpl client = new UMFuturesClientImpl(
+                PrivateConfig.TESTNET_API_KEY,
+                PrivateConfig.TESTNET_SECRET_KEY,
+                PrivateConfig.TESTNET_BASE_URL
+        );
+
+        parameters.put("symbol", "BTCUSDT");
+        parameters.put("side", "SELL");
+        parameters.put("type", "STOP");// STOP_MARKET
+        parameters.put("quantity", quantity);
+        parameters.put("price", String.format("%d", (int) calculatedValue));
+        parameters.put("stopPrice", "24000");
+        parameters.put("timeInForce", "GTC");
+        parameters.put("positionSide", "SHORT");
+//        parameters.put("stopPrice","30000");
+
+
+        try {
+            String result = client.account().newOrder(parameters);
+            logger.info(result);
+        } catch (BinanceConnectorException e) {
+            logger.error("fullErrMessage: {}", e.getMessage(), e);
+        } catch (BinanceClientException e) {
+            logger.error("fullErrMessage: {} \nerrMessage: {} \nerrCode: {} \nHTTPStatusCode: {}",
+                    e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
+        }
+    }
+
+    public static void placeBuyOrderTakeProfit() {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+
+        UMFuturesClientImpl client = new UMFuturesClientImpl(
+                PrivateConfig.TESTNET_API_KEY,
+                PrivateConfig.TESTNET_SECRET_KEY,
+                PrivateConfig.TESTNET_BASE_URL
+        );
+
+        parameters.put("symbol", "BTCUSDT");
+        parameters.put("side", "SELL");
+        parameters.put("type", "TAKE_PROFIT");// STOP_MARKET
+        parameters.put("quantity", quantity);
+        parameters.put("price", "35000");
+        parameters.put("stopPrice", "35000");
+        parameters.put("timeInForce", "GTC");
+        parameters.put("positionSide", "SHORT");
+
 
         try {
             String result = client.account().newOrder(parameters);
@@ -86,7 +161,7 @@ public final class NewOrder {
         }
     }
 
-    public static void placeBuyOrderStopLoss() {
+    public static void placeSellOrderStopLoss() {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
 
         UMFuturesClientImpl client = new UMFuturesClientImpl(
@@ -96,13 +171,13 @@ public final class NewOrder {
         );
 
         parameters.put("symbol", "BTCUSDT");
-        parameters.put("side","SELL");
-        parameters.put("type","STOP");// STOP_MARKET
+        parameters.put("side", "BUY");
+        parameters.put("type", "STOP");// STOP_MARKET
         parameters.put("quantity", quantity);
-        parameters.put("price",String.format("%d", (int)calculatedValue) );
-        parameters.put("stopPrice","24000");
+        parameters.put("price", String.format("%d", (int) calculatedValue));
+        parameters.put("stopPrice", "27000");
         parameters.put("timeInForce", "GTC");
-        parameters.put("positionSide", "SHORT");
+        parameters.put("positionSide", "LONG");
 //        parameters.put("stopPrice","30000");
 
 
@@ -116,7 +191,8 @@ public final class NewOrder {
                     e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
         }
     }
-    public static void placeBuyOrderTakeProfit() {
+
+    public static void placeSellOrderTakeProfit() {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
 
         UMFuturesClientImpl client = new UMFuturesClientImpl(
@@ -126,13 +202,13 @@ public final class NewOrder {
         );
 
         parameters.put("symbol", "BTCUSDT");
-        parameters.put("side","SELL");
-        parameters.put("type","TAKE_PROFIT");// STOP_MARKET
+        parameters.put("side", "BUY");
+        parameters.put("type", "TAKE_PROFIT");// STOP_MARKET
         parameters.put("quantity", quantity);
-        parameters.put("price", "35000");
-        parameters.put("stopPrice","35000");
+        parameters.put("price", "20000");
+        parameters.put("stopPrice", "20000");
         parameters.put("timeInForce", "GTC");
-        parameters.put("positionSide", "SHORT");
+        parameters.put("positionSide", "LONG");
 
 
         try {

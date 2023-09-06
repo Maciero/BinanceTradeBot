@@ -8,6 +8,7 @@ public class main {
 //        NewOrder.placeBuyOrderTakeProfit();
 //        NewOrder.placeBuyOrder();
 //    NewOrder.placeBuyOrderStopLoss();
-    NewOrder.placeBuyOrderTakeProfit();
+//    NewOrder.placeBuyOrderTakeProfit();
+
     }
 }

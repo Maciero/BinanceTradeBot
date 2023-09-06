@@ -1,4 +1,5 @@
 package com.binance.connector.futures.bot;
 
-public class AnalysisMethods {
+public enum Signal {
+    BUY,SELL,HOLD
 }
