@@ -51,7 +51,7 @@ public class GetAdlQuantile {
                     System.out.println("SHORT: " + shortValue);
                     System.out.println("BOTH: " + bothValue);
                 } else {
-                    System.out.println("Brak danych dla symbolu: " + symbol);
+                    System.out.println("Active open position: " + symbol);
                 }
             }
         } catch (BinanceConnectorException e) {

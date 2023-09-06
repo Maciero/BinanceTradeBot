@@ -25,7 +25,7 @@ public class MarkPriceKlines {
     static class TradingSignalTask extends TimerTask {
         @Override
         public void run() {
-            // Tutaj wywołujemy kod, który ma być wykonywany co 15 minut
+            // Tutaj wywołujemy kod, który ma być wykonywany co 1 minut
             processTradingSignal();
         }
     }
@@ -120,16 +120,15 @@ public class MarkPriceKlines {
             System.out.println("Stochastic Oscillator: " + stochasticOscillator);
 
             System.out.println(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
-
-
+            
             System.out.println("--------------------------------");
 
+            NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
+
             if (GetAdlQuantile.getPositionListIfEmpty()) {
-                NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
                 newOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
             }
             else if (!GetAdlQuantile.getPositionListIfEmpty()) {
-                NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
                 newOrder.checkForSignalIfgetPositionListIsNotEmpty(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
             }
 
