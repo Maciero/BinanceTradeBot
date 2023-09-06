@@ -3,6 +3,7 @@ package com.binance.connector.futures.bot;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -111,6 +112,7 @@ public class TechAnalysisMethods {
 
         return ema;
     }
+
     public static Signal generateTradingSignal(List<String[]> dataArray, List<Double> closePrices) {
         double rsi = calculateRSI(dataArray);
         MACD macd = calculateMACD(closePrices, 12, 26, 9); // Przykładowe parametry MACD
@@ -134,6 +136,38 @@ public class TechAnalysisMethods {
         return Signal.HOLD;
     }
 
+    public static double calculateStochasticOscillator(List<String[]> dataArray, int period) {
+        int dataSize = dataArray.size();
+
+        if (dataSize < period) {
+            throw new IllegalArgumentException("Not enough data points to calculate Stochastic Oscillator");
+        }
+
+        List<Double> highList = new ArrayList<>();
+        List<Double> lowList = new ArrayList<>();
+
+        // Przygotuj listy z najwyższymi i najniższymi cenami
+        for (int i = dataSize - period; i < dataSize; i++) {
+            String[] data = dataArray.get(i);
+            double high = Double.parseDouble(data[2]); // Najwyższa cena w okresie
+            double low = Double.parseDouble(data[3]);  // Najniższa cena w okresie
+            highList.add(high);
+            lowList.add(low);
+        }
+
+        // Znajdź najwyższą i najniższą cenę w okresie
+        double highestHigh = Collections.max(highList);
+        double lowestLow = Collections.min(lowList);
+
+        // Ostatnia cena zamknięcia
+        String[] lastData = dataArray.get(dataSize - 1);
+        double lastClose = Double.parseDouble(lastData[4]);
+
+        // Oblicz wartość oscylatora stochastycznego
+        double stochasticOscillator = ((lastClose - lowestLow) / (highestHigh - lowestLow)) * 100;
+
+        return stochasticOscillator;
+    }
 
 
     public static String convertTimestampToHumanReadable(long timestamp) {
