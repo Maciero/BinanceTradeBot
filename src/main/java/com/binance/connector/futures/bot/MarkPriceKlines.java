@@ -10,9 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.*;
 import java.lang.reflect.Type;
 
-
-import static com.binance.connector.futures.bot.TechAnalysisMethods.calculateMACD;
-import static com.binance.connector.futures.bot.TechAnalysisMethods.calculateMovingAverage;
+import static com.binance.connector.futures.bot.TechAnalysisMethods.*;
 
 
 public class MarkPriceKlines {
@@ -27,18 +25,20 @@ public class MarkPriceKlines {
     static class TradingSignalTask extends TimerTask {
         @Override
         public void run() {
-            // Tutaj wywołujemy kod, który ma być wykonywany co 15 minut
+            // Tutaj wywołujemy kod, który ma być wykonywany co 1 minut
             processTradingSignal();
         }
     }
 
     public static void processTradingSignal() {
 
+        String symbol = "ETHUSDT";
+
 
         UMFuturesClientImpl client = new UMFuturesClientImpl();
 
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-        parameters.put("symbol", "ETHUSDT");
+        parameters.put("symbol", symbol);
         parameters.put("interval", "15m");
 
         List<Double> closePrices = new ArrayList<>();
@@ -88,7 +88,7 @@ public class MarkPriceKlines {
             }
             System.out.println("--------------------------------");
             System.out.println(formattedOpenDate);
-            System.out.println("Coin close price: " + closePrices.get(closePrices.size() - 1));
+            System.out.println(symbol + " close price: " + closePrices.get(closePrices.size() - 1));
 
             int shortTermPeriod = 12; // Okres dla EMA krótkiego
             int longTermPeriod = 26; // Okres dla EMA długiego
@@ -114,16 +114,22 @@ public class MarkPriceKlines {
             System.out.println("MA(99): " + ma99);
 
             System.out.println("RSI(14): " + TechAnalysisMethods.calculateRSI(dataArray));
-            System.out.println("--------------------------------");
+
+            int period = 14; // Okres dla oscylatora stochastycznego
+            double stochasticOscillator = calculateStochasticOscillator(dataArray, period);
+            System.out.println("Stochastic Oscillator: " + stochasticOscillator);
 
             System.out.println(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
+            
+            System.out.println("--------------------------------");
 
+            NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
 
             if (GetAdlQuantile.getPositionListIfEmpty()) {
-                NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
                 newOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
-
-//                NewOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray,closePrices));
+            }
+            else if (!GetAdlQuantile.getPositionListIfEmpty()) {
+                newOrder.checkForSignalIfgetPositionListIsNotEmpty(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
             }
 
 

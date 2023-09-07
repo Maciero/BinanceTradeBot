@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
-
+//anuluje wszystkie stoplost i takeprofit dla danego symbolu
 public final class CancelAllOpenOrders {
     private CancelAllOpenOrders() {
     }
