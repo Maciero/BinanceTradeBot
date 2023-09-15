@@ -231,5 +231,24 @@
             <version>2.10.1</version>
         </dependency>
 
+        <!-- Apache POI for Excel -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>4.1.2</version> <!-- Wybierz odpowiednią wersję -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.2</version> <!-- Wybierz odpowiednią wersję -->
+        </dependency>
+
+        <!-- JFreeChart for creating charts -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.3</version> <!-- Wybierz odpowiednią wersję -->
+        </dependency>
+
     </dependencies>
 </project>

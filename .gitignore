@@ -38,3 +38,5 @@ build/
 .mvn/wrapper/maven-wrapper.jar
 logs/binance-java-connector/binance-java-connector.log.2023-08-26.gz
 *.gz
+*.xlsx
+*.png
