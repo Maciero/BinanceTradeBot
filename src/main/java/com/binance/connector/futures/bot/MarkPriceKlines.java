@@ -42,6 +42,7 @@ public class MarkPriceKlines {
         parameters.put("interval", "15m");
 
         List<Double> closePrices = new ArrayList<>();
+        List<Boolean> positionStates = new ArrayList<>();
         double closeNumber;
 
         try {
@@ -103,7 +104,7 @@ public class MarkPriceKlines {
 
             System.out.println("Latest Macd: " + latestMacd);
             System.out.println("Latest Signal: " + latestSignal);
-//            System.out.println("Latest Histogram: " + latestHistogram);
+            System.out.println("Latest Histogram: " + latestHistogram);
 
             double ma7 = calculateMovingAverage(closePrices, 7);
             double ma25 = calculateMovingAverage(closePrices, 25);
@@ -120,10 +121,20 @@ public class MarkPriceKlines {
             System.out.println("Stochastic Oscillator: " + stochasticOscillator);
 
             System.out.println(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
-            
+
             System.out.println("--------------------------------");
 
             NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
+
+
+            positionStates.add(GetAdlQuantile.getPositionListIfEmpty());
+
+            // Zapis danych do pliku Excel
+            ExcelWriter.writeDataToExcel(dataArray,positionStates);
+
+            // Tworzenie wykresu
+            ChartCreator.createLineChart(dataArray);
+
 
             if (GetAdlQuantile.getPositionListIfEmpty()) {
                 newOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
