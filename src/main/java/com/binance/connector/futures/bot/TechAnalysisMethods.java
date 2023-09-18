@@ -119,9 +119,9 @@ public class TechAnalysisMethods {
         double movingAverage = calculateMovingAverage(closePrices, 14); // Przykładowy okres średniej kroczącej
 
         // Kryteria dla RSI i MACD
-        if (rsi > 70 && macd.getMacdLine()[macd.getMacdLine().length - 1] < macd.getSignalLine()[macd.getSignalLine().length - 1]) {
+        if (rsi > 70 && macd.getMacdLine()[macd.getMacdLine().length - 1] < macd.getSignalLine()[macd.getSignalLine().length - 1] || rsi > 80) {
             return Signal.SELL; // Sygnał do sprzedaży
-        } else if (rsi < 30 && macd.getMacdLine()[macd.getMacdLine().length - 1] > macd.getSignalLine()[macd.getSignalLine().length - 1]) {
+        } else if (rsi < 30 && macd.getMacdLine()[macd.getMacdLine().length - 1] > macd.getSignalLine()[macd.getSignalLine().length - 1] || rsi < 20) {
             return Signal.BUY; // Sygnał do zakupu
         }
 
