@@ -122,9 +122,22 @@ public class MarkPriceKlines {
 
             System.out.println(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
 
+            NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
+
+
+            if (GetAdlQuantile.getPositionListIfEmpty()) {
+                newOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
+
+            }
+            else if (!GetAdlQuantile.getPositionListIfEmpty()) {
+                newOrder.checkForSignalIfgetPositionListIsNotEmpty(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
+            }
+
+
             System.out.println("--------------------------------");
 
-            NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
+
+
 
 
             positionStates.add(GetAdlQuantile.getPositionListIfEmpty());
@@ -136,12 +149,7 @@ public class MarkPriceKlines {
             ChartCreator.createLineChart(dataArray);
 
 
-            if (GetAdlQuantile.getPositionListIfEmpty()) {
-                newOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
-            }
-            else if (!GetAdlQuantile.getPositionListIfEmpty()) {
-                newOrder.checkForSignalIfgetPositionListIsNotEmpty(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
-            }
+
 
 
         } catch (BinanceConnectorException e) {
