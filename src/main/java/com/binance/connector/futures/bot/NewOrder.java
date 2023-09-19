@@ -246,7 +246,7 @@ public class NewOrder {
         parameters.put("side", "BUY");
         parameters.put("positionSide", "SHORT");
         parameters.put("type", "TAKE_PROFIT_MARKET");
-        parameters.put("stopPrice", 20000);
+        parameters.put("stopPrice", 1000);
         parameters.put("closePosition", true);
         parameters.put("timeInForce", "GTE_GTC");
         parameters.put("workingType", "MARK_PRICE");
