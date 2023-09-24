@@ -6,6 +6,7 @@ import com.binance.connector.futures.client.exceptions.BinanceConnectorException
 import com.binance.connector.futures.client.impl.UMFuturesClientImpl;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,11 @@ public class NewOrder {
 
     private static final double percentage = 0.1; //10%
 
+    public static final Map<String, Double> usedPosition = new LinkedHashMap<>();
+
+    private static StringBuilder stringBuilder = new StringBuilder();
+
+    private static int counter = 0;
 
     public void checkForSignal(Signal signal) {
         if (signal == Signal.BUY) {
@@ -30,10 +36,34 @@ public class NewOrder {
             placeBuyOrderStopLoss();
             placeBuyOrderTakeProfit();
 
+
+            //Wartości do mapy
+            stringBuilder.append(signal + " " + counter);
+
+
+            usedPosition.put(String.valueOf(stringBuilder), price);
+
+            counter++;
+            stringBuilder.delete(0, stringBuilder.length());
+            for (Map.Entry<String, Double> entry : usedPosition.entrySet()) {
+                String key = entry.getKey();
+                Double value = entry.getValue();
+                System.out.println("Key: " + key + ", Value: " + value);
+            }
+
         } else if (signal == Signal.SELL) {
             placeSellOrder();
             placeSellOrderStopLoss();
             placeSellOrderTakeProfit();
+
+            //Wartości do mapy
+            stringBuilder.append(signal);
+            stringBuilder.append(counter);
+
+            usedPosition.put(String.valueOf(stringBuilder), price);
+
+            counter++;
+            stringBuilder.delete(0, stringBuilder.length());
         }
     }
 
