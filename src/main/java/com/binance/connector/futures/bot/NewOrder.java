@@ -30,6 +30,7 @@ public class NewOrder {
 
     private static StringBuilder stringBuilder = new StringBuilder();
     private static List<Double> allPrices = new ArrayList<>();
+    private static List<String> signalHolder = new ArrayList<>();
     private static int counter = 0;
 
     public void checkForSignal(Signal signal) {
@@ -64,6 +65,13 @@ public class NewOrder {
 
         } else if (signal == Signal.SELL) {
             placeSellOrderForLongPosition();
+
+        } else if (signal == Signal.HOLD) {
+            signalHolder.add(String.valueOf(Signal.HOLD));
+            if (signalHolder.size() == 30){
+                comparePriceToAllPrices();
+                signalHolder.clear();
+            }
         }
     }
 
@@ -301,10 +309,10 @@ public class NewOrder {
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "BUY");
         parameters.put("positionSide", "SHORT");
-        parameters.put("type", "MARKET");
-//        parameters.put("type", "LIMIT");
+//        parameters.put("type", "MARKET");
+        parameters.put("type", "LIMIT");
         parameters.put("quantity", quantity);
-//        parameters.put("price", price);
+        parameters.put("price", price);
 
         try {
             String result = client.account().newOrder(parameters);
@@ -352,10 +360,10 @@ public class NewOrder {
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
         parameters.put("positionSide", "LONG");
-        parameters.put("type", "MARKET");
-//        parameters.put("type", "LIMIT");
+//        parameters.put("type", "MARKET");
+        parameters.put("type", "LIMIT");
         parameters.put("quantity", quantity);
-//        parameters.put("price", price);
+        parameters.put("price", price);
 
         try {
             String result = client.account().newOrder(parameters);
