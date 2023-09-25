@@ -5,7 +5,9 @@ import com.binance.connector.futures.client.exceptions.BinanceClientException;
 import com.binance.connector.futures.client.exceptions.BinanceConnectorException;
 import com.binance.connector.futures.client.impl.UMFuturesClientImpl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -24,10 +26,10 @@ public class NewOrder {
 
     private static final double percentage = 0.1; //10%
 
-    public static final Map<String, Double> usedPosition = new LinkedHashMap<>();
+    public static final Map<String, List<Double>> usedPosition = new LinkedHashMap<>();
 
     private static StringBuilder stringBuilder = new StringBuilder();
-
+    private static List<Double> allPrices = new ArrayList<>();
     private static int counter = 0;
 
     public void checkForSignal(Signal signal) {
@@ -38,18 +40,11 @@ public class NewOrder {
 
 
             //Wartości do mapy
-            stringBuilder.append(signal + " " + counter);
-
-
-            usedPosition.put(String.valueOf(stringBuilder), price);
-
+            stringBuilder.append(signal).append(" ").append(counter);
+            allPrices.add(price);
             counter++;
-            stringBuilder.delete(0, stringBuilder.length());
-            for (Map.Entry<String, Double> entry : usedPosition.entrySet()) {
-                String key = entry.getKey();
-                Double value = entry.getValue();
-                System.out.println("Key: " + key + ", Value: " + value);
-            }
+            System.out.println(stringBuilder);
+            System.out.println(allPrices.get(0));
 
         } else if (signal == Signal.SELL) {
             placeSellOrder();
@@ -57,13 +52,9 @@ public class NewOrder {
             placeSellOrderTakeProfit();
 
             //Wartości do mapy
-            stringBuilder.append(signal);
-            stringBuilder.append(counter);
-
-            usedPosition.put(String.valueOf(stringBuilder), price);
-
+            stringBuilder.append(signal).append(" ").append(counter);
+            allPrices.add(price);
             counter++;
-            stringBuilder.delete(0, stringBuilder.length());
         }
     }
 
@@ -89,7 +80,9 @@ public class NewOrder {
         parameters.put("side", "BUY");
         parameters.put("positionSide", "LONG");
         parameters.put("type", "MARKET");
+//        parameters.put("type", "LIMIT");
         parameters.put("quantity", quantity);
+//        parameters.put("price", price);
 
         try {
             String result = client.account().newOrder(parameters);
@@ -194,6 +187,8 @@ public class NewOrder {
         parameters.put("positionSide", "SHORT");
         parameters.put("type", "MARKET");
         parameters.put("quantity", quantity);
+//        parameters.put("type", "LIMIT");
+//        parameters.put("price", price);
 
         try {
             String result = client.account().newOrder(parameters);
@@ -307,11 +302,36 @@ public class NewOrder {
         parameters.put("side", "BUY");
         parameters.put("positionSide", "SHORT");
         parameters.put("type", "MARKET");
+//        parameters.put("type", "LIMIT");
         parameters.put("quantity", quantity);
+//        parameters.put("price", price);
 
         try {
             String result = client.account().newOrder(parameters);
             logger.info(result);
+
+            allPrices.add(price);
+            usedPosition.put(String.valueOf(stringBuilder),allPrices);
+
+            stringBuilder.delete(0, stringBuilder.length());
+            allPrices.clear();
+
+            // Wyświetl wszystkie wartości w mapie
+            for (Map.Entry<String, List<Double>> entry : usedPosition.entrySet()) {
+                String key = entry.getKey();
+                List<Double> values = entry.getValue();
+
+                System.out.println("Klucz: " + key);
+                System.out.println("Wartości:");
+
+                for (Double value : values) {
+                    System.out.println(value);
+                }
+
+                System.out.println("----");
+            }
+
+
         } catch (BinanceConnectorException e) {
             logger.error("fullErrMessage: {}", e.getMessage(), e);
         } catch (BinanceClientException e) {
@@ -333,11 +353,36 @@ public class NewOrder {
         parameters.put("side", "SELL");
         parameters.put("positionSide", "LONG");
         parameters.put("type", "MARKET");
+//        parameters.put("type", "LIMIT");
         parameters.put("quantity", quantity);
+//        parameters.put("price", price);
 
         try {
             String result = client.account().newOrder(parameters);
             logger.info(result);
+
+            allPrices.add(price);
+            usedPosition.put(String.valueOf(stringBuilder),allPrices);
+
+            stringBuilder.delete(0, stringBuilder.length());
+            allPrices.clear();
+
+            // Wyświetl wszystkie wartości w mapie
+            for (Map.Entry<String, List<Double>> entry : usedPosition.entrySet()) {
+                String key = entry.getKey();
+                List<Double> values = entry.getValue();
+
+                System.out.println("Klucz: " + key);
+                System.out.println("Wartości:");
+
+                for (Double value : values) {
+                    System.out.println(value);
+                }
+
+                System.out.println("----");
+            }
+
+
         } catch (BinanceConnectorException e) {
             logger.error("fullErrMessage: {}", e.getMessage(), e);
         } catch (BinanceClientException e) {
