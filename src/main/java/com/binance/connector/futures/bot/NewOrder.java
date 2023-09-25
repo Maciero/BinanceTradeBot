@@ -21,7 +21,7 @@ public class NewOrder {
     }
 
     private static final double quantity = 1;
-    private static double price;
+    private static Double price;
     private static final Logger logger = LoggerFactory.getLogger(NewOrder.class);
 
     private static final double percentage = 0.1; //10%
@@ -30,6 +30,7 @@ public class NewOrder {
 
     private static StringBuilder stringBuilder = new StringBuilder();
     private static List<Double> allPrices = new ArrayList<>();
+    private static List<String> signalHolder = new ArrayList<>();
     private static int counter = 0;
 
     public void checkForSignal(Signal signal) {
@@ -64,6 +65,13 @@ public class NewOrder {
 
         } else if (signal == Signal.SELL) {
             placeSellOrderForLongPosition();
+
+        } else if (signal == Signal.HOLD) {
+            signalHolder.add(String.valueOf(Signal.HOLD));
+            if (signalHolder.size() == 30){
+                comparePriceToAllPrices();
+                signalHolder.clear();
+            }
         }
     }
 
@@ -301,17 +309,17 @@ public class NewOrder {
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "BUY");
         parameters.put("positionSide", "SHORT");
-        parameters.put("type", "MARKET");
-//        parameters.put("type", "LIMIT");
+//        parameters.put("type", "MARKET");
+        parameters.put("type", "LIMIT");
         parameters.put("quantity", quantity);
-//        parameters.put("price", price);
+        parameters.put("price", price);
 
         try {
             String result = client.account().newOrder(parameters);
             logger.info(result);
 
             allPrices.add(price);
-            usedPosition.put(String.valueOf(stringBuilder),allPrices);
+            usedPosition.put(String.valueOf(stringBuilder), allPrices);
 
             stringBuilder.delete(0, stringBuilder.length());
             allPrices.clear();
@@ -352,17 +360,17 @@ public class NewOrder {
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
         parameters.put("positionSide", "LONG");
-        parameters.put("type", "MARKET");
-//        parameters.put("type", "LIMIT");
+//        parameters.put("type", "MARKET");
+        parameters.put("type", "LIMIT");
         parameters.put("quantity", quantity);
-//        parameters.put("price", price);
+        parameters.put("price", price);
 
         try {
             String result = client.account().newOrder(parameters);
             logger.info(result);
 
             allPrices.add(price);
-            usedPosition.put(String.valueOf(stringBuilder),allPrices);
+            usedPosition.put(String.valueOf(stringBuilder), allPrices);
 
             stringBuilder.delete(0, stringBuilder.length());
             allPrices.clear();
@@ -388,6 +396,47 @@ public class NewOrder {
         } catch (BinanceClientException e) {
             logger.error("fullErrMessage: {} \nerrMessage: {} \nerrCode: {} \nHTTPStatusCode: {}",
                     e.getMessage(), e.getErrMsg(), e.getErrorCode(), e.getHttpStatusCode(), e);
+        }
+    }
+
+
+    // Metoda porównująca wartość price z wartościami w allPrices
+    public void comparePriceToAllPrices() {
+        double acceptableProfit = 10.0;
+
+        if (allPrices.isEmpty()) {
+            System.out.println("Lista allPrices jest pusta.");
+            return;
+        }
+
+        System.out.println("Porównywanie ceny z wartościami w allPrices:");
+
+        for (Double priceInList : allPrices) {
+            if (price == null) {
+                System.out.println("Cena nie jest zdefiniowana.");
+                return;
+            }
+
+            if (price.equals(priceInList)) {
+                System.out.println("Cena jest równa jednej z wartości w allPrices: " + price);
+                return;
+            } else if (price > priceInList) {
+                if ((price - priceInList) > acceptableProfit) {
+                    System.out.println("Cena jest większa od wartości w allPrices o więcej niż " + acceptableProfit);
+                    placeSellOrderForLongPosition();
+                } else {
+                    System.out.println("Cena jest większa od wartości w allPrices, ale nie o wystarczająco dużo.");
+                }
+            } else if (price < priceInList) {
+                if ((priceInList - price) > acceptableProfit) {
+                    System.out.println("Cena jest mniejsza od wartości w allPrices o więcej niż " + acceptableProfit);
+                    placeBuyOrderForShortPosition();
+                } else {
+                    System.out.println("Cena jest mniejsza od wartości w allPrices, ale nie o wystarczająco dużo.");
+                }
+            }
+
+            System.out.println("Cena nie pasuje do żadnej z wartości w allPrices: " + price);
         }
     }
 }
