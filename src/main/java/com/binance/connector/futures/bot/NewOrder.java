@@ -5,6 +5,7 @@ import com.binance.connector.futures.client.exceptions.BinanceClientException;
 import com.binance.connector.futures.client.exceptions.BinanceConnectorException;
 import com.binance.connector.futures.client.impl.UMFuturesClientImpl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +32,8 @@ public class NewOrder {
     private static StringBuilder stringBuilder = new StringBuilder();
     private static List<Double> allPrices = new ArrayList<>();
     private static List<String> signalHolder = new ArrayList<>();
+
+    public static final List<LocalDateTime> dateHolder = new ArrayList<>();
     private static int counter = 0;
 
     public void checkForSignal(Signal signal) {
@@ -39,13 +42,15 @@ public class NewOrder {
             placeBuyOrderStopLoss();
             placeBuyOrderTakeProfit();
 
-
             //Wartości do mapy
             stringBuilder.append(signal).append(" ").append(counter);
             allPrices.add(price);
+
+            // Dodawanie obecnego czasu do dateHolder
+            LocalDateTime currentTime = LocalDateTime.now();
+            dateHolder.add(currentTime);
+
             counter++;
-            System.out.println(stringBuilder);
-            System.out.println(allPrices.get(0));
 
         } else if (signal == Signal.SELL) {
             placeSellOrder();
@@ -55,6 +60,11 @@ public class NewOrder {
             //Wartości do mapy
             stringBuilder.append(signal).append(" ").append(counter);
             allPrices.add(price);
+
+            // Dodawanie obecnego czasu do dateHolder
+            LocalDateTime currentTime = LocalDateTime.now();
+            dateHolder.add(currentTime);
+
             counter++;
         }
     }
@@ -68,7 +78,9 @@ public class NewOrder {
 
         } else if (signal == Signal.HOLD) {
             signalHolder.add(String.valueOf(Signal.HOLD));
-            if (signalHolder.size() == 30){
+            System.out.println("Liczba signal HOLD " + signalHolder.size());
+
+            if (signalHolder.size() == 30) {
                 comparePriceToAllPrices();
                 signalHolder.clear();
             }
@@ -321,6 +333,10 @@ public class NewOrder {
             allPrices.add(price);
             usedPosition.put(String.valueOf(stringBuilder), allPrices);
 
+            // Dodawanie obecnego czasu do dateHolder
+            LocalDateTime currentTime = LocalDateTime.now();
+            dateHolder.add(currentTime);
+
             stringBuilder.delete(0, stringBuilder.length());
             allPrices.clear();
 
@@ -371,6 +387,10 @@ public class NewOrder {
 
             allPrices.add(price);
             usedPosition.put(String.valueOf(stringBuilder), allPrices);
+
+            // Dodawanie obecnego czasu do dateHolder
+            LocalDateTime currentTime = LocalDateTime.now();
+            dateHolder.add(currentTime);
 
             stringBuilder.delete(0, stringBuilder.length());
             allPrices.clear();
