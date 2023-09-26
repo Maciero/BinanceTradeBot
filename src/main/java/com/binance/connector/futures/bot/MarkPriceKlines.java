@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.lang.reflect.Type;
 
@@ -128,8 +129,7 @@ public class MarkPriceKlines {
             if (GetAdlQuantile.getPositionListIfEmpty()) {
                 newOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
 
-            }
-            else if (!GetAdlQuantile.getPositionListIfEmpty()) {
+            } else if (!GetAdlQuantile.getPositionListIfEmpty()) {
                 newOrder.checkForSignalIfgetPositionListIsNotEmpty(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
             }
 
@@ -137,19 +137,25 @@ public class MarkPriceKlines {
             System.out.println("--------------------------------");
 
 
-
-
-
             positionStates.add(GetAdlQuantile.getPositionListIfEmpty());
 
+//            List<Double> list = new ArrayList<>();
+//            list.add(1455.5);
+//            list.add(1414.5);
+//            NewOrder.usedPosition.put("BUY 0",list);
+
+//            LocalDateTime currentTime = LocalDateTime.now();
+//
+//            NewOrder.dateHolder.add(currentTime);
+//            NewOrder.dateHolder.add(currentTime);
+
             // Zapis danych do pliku Excel
-            ExcelWriter.writeDataToExcel(dataArray,positionStates);
+            ExcelWriter.writeDataToExcel(dataArray, positionStates);
+            //Zapis mapy do Excel
+            ExcelWriterMap.writeDataToExcel(NewOrder.usedPosition,NewOrder.dateHolder);
 
             // Tworzenie wykresu
             ChartCreator.createLineChart(dataArray);
-
-
-
 
 
         } catch (BinanceConnectorException e) {
