@@ -24,6 +24,8 @@ public class NewOrder {
     private static final double quantity = 1;
     private static Double price;
 
+    public static Boolean limitPositionOn=false;
+
     private static final Logger logger = LoggerFactory.getLogger(NewOrder.class);
 
     private static final double percentage = 0.1; //10%
@@ -110,6 +112,7 @@ public class NewOrder {
         try {
             String result = client.account().newOrder(parameters);
             logger.info(result);
+            limitPositionOn = true;
         } catch (BinanceConnectorException e) {
             logger.error("fullErrMessage: {}", e.getMessage(), e);
         } catch (BinanceClientException e) {
@@ -220,6 +223,7 @@ public class NewOrder {
         try {
             String result = client.account().newOrder(parameters);
             logger.info(result);
+            limitPositionOn = true;
         } catch (BinanceConnectorException e) {
             logger.error("fullErrMessage: {}", e.getMessage(), e);
         } catch (BinanceClientException e) {
