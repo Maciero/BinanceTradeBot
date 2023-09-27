@@ -326,8 +326,10 @@ public class NewOrder {
         parameters.put("positionSide", "SHORT");
 //        parameters.put("type", "MARKET");
         parameters.put("type", "LIMIT");
+        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
         parameters.put("price", price);
+
 
         try {
             String result = client.account().newOrder(parameters);
@@ -381,6 +383,7 @@ public class NewOrder {
         parameters.put("positionSide", "LONG");
 //        parameters.put("type", "MARKET");
         parameters.put("type", "LIMIT");
+        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
         parameters.put("price", price);
 
