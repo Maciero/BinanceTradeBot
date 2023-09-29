@@ -20,7 +20,7 @@ public class MarkPriceKlines {
         Timer timer = new Timer();
 
         // Ustawiamy zadanie, które ma być wykonywane co 1 minute
-        timer.scheduleAtFixedRate(new TradingSignalTask(), 0, 1 * 60 * 1000);
+        timer.scheduleAtFixedRate(new TradingSignalTask(), 0, 60 * 1000);
     }
 
     static class TradingSignalTask extends TimerTask {
@@ -126,8 +126,15 @@ public class MarkPriceKlines {
             NewOrder newOrder = new NewOrder(closePrices.get(closePrices.size() - 1));
 
 
-            if (GetAdlQuantile.getPositionListIfEmpty()) {
+            if (NewOrder.limitPositionOn) {
+                if (!GetAdlQuantile.getPositionListIfEmpty()){
+                    NewOrder.limitPositionOn=false;
+                }
+            }
+
+            if ((GetAdlQuantile.getPositionListIfEmpty() && !NewOrder.limitPositionOn)) {
                 newOrder.checkForSignal(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
+                System.out.println("Limit position: " +NewOrder.limitPositionOn);
 
             } else if (!GetAdlQuantile.getPositionListIfEmpty()) {
                 newOrder.checkForSignalIfgetPositionListIsNotEmpty(TechAnalysisMethods.generateTradingSignal(dataArray, closePrices));
@@ -152,7 +159,7 @@ public class MarkPriceKlines {
             // Zapis danych do pliku Excel
             ExcelWriter.writeDataToExcel(dataArray, positionStates);
             //Zapis mapy do Excel
-            ExcelWriterMap.writeDataToExcel(NewOrder.usedPosition,NewOrder.dateHolder);
+            ExcelWriterMap.writeDataToExcel(NewOrder.usedPosition, NewOrder.dateHolder);
 
             // Tworzenie wykresu
             ChartCreator.createLineChart(dataArray);

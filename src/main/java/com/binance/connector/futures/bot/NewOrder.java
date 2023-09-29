@@ -23,6 +23,9 @@ public class NewOrder {
 
     private static final double quantity = 1;
     private static Double price;
+
+    public static Boolean limitPositionOn=false;
+
     private static final Logger logger = LoggerFactory.getLogger(NewOrder.class);
 
     private static final double percentage = 0.1; //10%
@@ -95,6 +98,7 @@ public class NewOrder {
                 PrivateConfig.TESTNET_SECRET_KEY,
                 PrivateConfig.TESTNET_BASE_URL
         );
+        Integer integerPrice = price.intValue();
 
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "BUY");
@@ -103,11 +107,12 @@ public class NewOrder {
         parameters.put("type", "LIMIT");
         parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", price);
+        parameters.put("price", integerPrice);
 
         try {
             String result = client.account().newOrder(parameters);
             logger.info(result);
+            limitPositionOn = true;
         } catch (BinanceConnectorException e) {
             logger.error("fullErrMessage: {}", e.getMessage(), e);
         } catch (BinanceClientException e) {
@@ -203,6 +208,8 @@ public class NewOrder {
                 PrivateConfig.TESTNET_BASE_URL
         );
 
+        Integer integerPrice = price.intValue();
+
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
         parameters.put("positionSide", "SHORT");
@@ -210,12 +217,13 @@ public class NewOrder {
         parameters.put("type", "LIMIT");
         parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", price);
+        parameters.put("price", integerPrice);
 
 
         try {
             String result = client.account().newOrder(parameters);
             logger.info(result);
+            limitPositionOn = true;
         } catch (BinanceConnectorException e) {
             logger.error("fullErrMessage: {}", e.getMessage(), e);
         } catch (BinanceClientException e) {
@@ -321,13 +329,17 @@ public class NewOrder {
                 PrivateConfig.TESTNET_BASE_URL
         );
 
+        Integer integerPrice = price.intValue();
+
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "BUY");
         parameters.put("positionSide", "SHORT");
 //        parameters.put("type", "MARKET");
         parameters.put("type", "LIMIT");
+        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", price);
+        parameters.put("price", integerPrice);
+
 
         try {
             String result = client.account().newOrder(parameters);
@@ -376,13 +388,16 @@ public class NewOrder {
                 PrivateConfig.TESTNET_BASE_URL
         );
 
+        Integer integerPrice = price.intValue();
+
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
         parameters.put("positionSide", "LONG");
 //        parameters.put("type", "MARKET");
         parameters.put("type", "LIMIT");
+        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", price);
+        parameters.put("price", integerPrice);
 
         try {
             String result = client.account().newOrder(parameters);
@@ -459,7 +474,7 @@ public class NewOrder {
                 }
             }
 
-            System.out.println("Cena nie pasuje do żadnej z wartości w allPrices: " + price);
+//            System.out.println("Cena nie pasuje do żadnej z wartości w allPrices: " + price);
         }
     }
 }
