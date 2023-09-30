@@ -28,7 +28,7 @@ public class NewOrder {
 
     private static final Logger logger = LoggerFactory.getLogger(NewOrder.class);
 
-    private static final double percentage = 0.1; //10%
+    private static final double percentage = 0.05; //5%
 
     public static final Map<String, List<Double>> usedPosition = new LinkedHashMap<>();
 
@@ -103,11 +103,11 @@ public class NewOrder {
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "BUY");
         parameters.put("positionSide", "LONG");
-//        parameters.put("type", "MARKET");
-        parameters.put("type", "LIMIT");
-        parameters.put("timeInForce", "GTC");
+        parameters.put("type", "MARKET");
+//        parameters.put("type", "LIMIT");
+//        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", integerPrice);
+//        parameters.put("price", integerPrice);
 
         try {
             String result = client.account().newOrder(parameters);
@@ -213,11 +213,11 @@ public class NewOrder {
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
         parameters.put("positionSide", "SHORT");
-//        parameters.put("type", "MARKET");
-        parameters.put("type", "LIMIT");
-        parameters.put("timeInForce", "GTC");
+        parameters.put("type", "MARKET");
+//        parameters.put("type", "LIMIT");
+//        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", integerPrice);
+//        parameters.put("price", integerPrice);
 
 
         try {

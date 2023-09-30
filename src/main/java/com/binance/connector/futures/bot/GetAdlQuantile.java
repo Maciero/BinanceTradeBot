@@ -46,10 +46,10 @@ public class GetAdlQuantile {
                     int shortValue = adlQuantile.get("SHORT").getAsInt();
                     int bothValue = adlQuantile.get("BOTH").getAsInt();
 
-                    System.out.println("Symbol: " + symbol);
-                    System.out.println("LONG: " + longValue);
-                    System.out.println("SHORT: " + shortValue);
-                    System.out.println("BOTH: " + bothValue);
+                    System.out.print("Symbol: " + symbol);
+                    System.out.print(" LONG: " + longValue);
+                    System.out.print(" SHORT: " + shortValue);
+                    System.out.println(" BOTH: " + bothValue);
                 } else {
                     System.out.println("Active open position: " + symbol);
                 }
