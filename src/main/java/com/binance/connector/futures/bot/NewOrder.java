@@ -334,11 +334,11 @@ public class NewOrder {
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "BUY");
         parameters.put("positionSide", "SHORT");
-//        parameters.put("type", "MARKET");
-        parameters.put("type", "LIMIT");
-        parameters.put("timeInForce", "GTC");
+        parameters.put("type", "MARKET");
+//        parameters.put("type", "LIMIT");
+//        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", integerPrice);
+//        parameters.put("price", integerPrice);
 
 
         try {
@@ -393,11 +393,11 @@ public class NewOrder {
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
         parameters.put("positionSide", "LONG");
-//        parameters.put("type", "MARKET");
-        parameters.put("type", "LIMIT");
-        parameters.put("timeInForce", "GTC");
+        parameters.put("type", "MARKET");
+//        parameters.put("type", "LIMIT");
+//        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", integerPrice);
+//        parameters.put("price", integerPrice);
 
         try {
             String result = client.account().newOrder(parameters);
@@ -449,7 +449,10 @@ public class NewOrder {
 
         System.out.println("Porównywanie ceny z wartościami w allPrices:");
 
-        for (Double priceInList : allPrices) {
+        // Utwórz kopię listy allPrices
+        List<Double> copyOfAllPrices = new ArrayList<>(allPrices);
+
+        for (Double priceInList : copyOfAllPrices) {
             if (price == null) {
                 System.out.println("Cena nie jest zdefiniowana.");
                 return;
@@ -474,7 +477,7 @@ public class NewOrder {
                 }
             }
 
-//            System.out.println("Cena nie pasuje do żadnej z wartości w allPrices: " + price);
+            // Nie usuwaj elementów z kopii listy, nie wpłynie to na oryginalną listę allPrices
         }
     }
 }
