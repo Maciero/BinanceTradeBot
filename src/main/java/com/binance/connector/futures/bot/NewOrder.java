@@ -449,7 +449,10 @@ public class NewOrder {
 
         System.out.println("Porównywanie ceny z wartościami w allPrices:");
 
-        for (Double priceInList : allPrices) {
+        // Utwórz kopię listy allPrices
+        List<Double> copyOfAllPrices = new ArrayList<>(allPrices);
+
+        for (Double priceInList : copyOfAllPrices) {
             if (price == null) {
                 System.out.println("Cena nie jest zdefiniowana.");
                 return;
@@ -474,7 +477,7 @@ public class NewOrder {
                 }
             }
 
-//            System.out.println("Cena nie pasuje do żadnej z wartości w allPrices: " + price);
+            // Nie usuwaj elementów z kopii listy, nie wpłynie to na oryginalną listę allPrices
         }
     }
 }
