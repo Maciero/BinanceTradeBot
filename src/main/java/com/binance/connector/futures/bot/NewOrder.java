@@ -334,11 +334,11 @@ public class NewOrder {
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "BUY");
         parameters.put("positionSide", "SHORT");
-//        parameters.put("type", "MARKET");
-        parameters.put("type", "LIMIT");
-        parameters.put("timeInForce", "GTC");
+        parameters.put("type", "MARKET");
+//        parameters.put("type", "LIMIT");
+//        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", integerPrice);
+//        parameters.put("price", integerPrice);
 
 
         try {
@@ -393,11 +393,11 @@ public class NewOrder {
         parameters.put("symbol", "ETHUSDT");
         parameters.put("side", "SELL");
         parameters.put("positionSide", "LONG");
-//        parameters.put("type", "MARKET");
-        parameters.put("type", "LIMIT");
-        parameters.put("timeInForce", "GTC");
+        parameters.put("type", "MARKET");
+//        parameters.put("type", "LIMIT");
+//        parameters.put("timeInForce", "GTC");
         parameters.put("quantity", quantity);
-        parameters.put("price", integerPrice);
+//        parameters.put("price", integerPrice);
 
         try {
             String result = client.account().newOrder(parameters);
